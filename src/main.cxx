@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include "gui/GUI.h"
 
 // Macros
 #define fori(x) for (int i=0; i<x; i++)
@@ -19,5 +20,11 @@ int main (int argc, char * argv[]) {
         argv++;
     };
 
+    // Create and lauching the GUI main thread
+    GUI * Interface = new GUI();
+    Interface->root->show();
+    Fl::run();
+
+    std::cout << "Bye!" << std::endl;
     return 0;
 }

@@ -1,1 +1,3 @@
-jackMidiLogger
+bin/*
+**/*.o
+src/gui/GUI

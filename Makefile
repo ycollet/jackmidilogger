@@ -1,11 +1,19 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror
-LDFLAGS = -ljack `fltk-config --ldflags`
+FLTK_CXXFLAGS = `fltk-config --cflags`
+FLTK_LDFLAGS = `fltk-config --ldflags`
+JACK_LDFLAGS = -ljack
 
 APP_NAME = "jackMidiLogger"
 
 main: src/main.cxx
-	$(CXX) $(CXXFLAGS) -o $(APP_NAME) $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS)
 
-debug: src/main.cxx
-	$(CXX) $(CXXFLAGS) -g -o $(APP_NAME) $^ $(LDFLAGS)
+debug: obj/main.o obj/GUI.o
+	$(CXX) $(CXXFLAGS) -g $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS)
+
+obj/main.o: src/main.cxx src/gui/GUI.h
+	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) -c $< -o $@ $(FLTK_LDFLAGS)
+
+obj/GUI.o: src/gui/GUI.cxx src/gui/GUI.h
+	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) -c $< -o $@ $(FLTK_LDFLAGS)
