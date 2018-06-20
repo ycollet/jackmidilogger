@@ -11,19 +11,27 @@
 
 class GUI {
 private:
+  // Callback function dedicated to the Pretty Button
+  // Change the Text Buffer of Messages to Pretty or Hexa
   static void butPushPretty(Fl_Light_Button*, GUI*);
 public:
   GUI();
-  bool isPretty = false;
   Fl_Double_Window *root;
+  // List of possibles MIDI sources
   Fl_Check_Browser *sources;
   Fl_Text_Display *messages;
+  // Text Buffer with raw MIDI datas
   Fl_Text_Buffer *buffer_hexa;
+  // Text Buffer with prettyfied MIDI datas
   Fl_Text_Buffer *buffer_pretty;
   Fl_Pack *options;
+  // Switch display of MIDI Notes Messages On / Off
   Fl_Light_Button *notes;
+  // Switch display of MIDI CC Messages On / Off
   Fl_Light_Button *cc;
+  // Switch display of MIDI Messages On / Off
   Fl_Light_Button *other;
+  // Pretty or Not ?
   Fl_Light_Button *pretty;
 };
 #endif

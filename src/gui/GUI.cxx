@@ -21,12 +21,15 @@ GUI::GUI() {
       messages->color(FL_GRAY0);
       messages->textfont(13);
       messages->textcolor(FL_BACKGROUND2_COLOR);
-      messages->buffer(buffer_hexa);
+      // Display Prettyfied data by default
+      messages->buffer(buffer_pretty);
     } // Fl_Text_Display* messages
     { options = new Fl_Pack(330, 15, 600, 80);
       options->type(1);
       { notes = new Fl_Light_Button(570, 35, 80, 40, "Notes");
         notes->selection_color((Fl_Color)2);
+        // MIDI Notes displayed by default
+        notes->value(1);
       } // Fl_Light_Button* notes
       { cc = new Fl_Light_Button(660, 35, 80, 40, "CC");
         cc->selection_color((Fl_Color)2);
@@ -36,6 +39,7 @@ GUI::GUI() {
       } // Fl_Light_Button* other
       { pretty = new Fl_Light_Button(840, 35, 80, 40, "Pretty");
         pretty->selection_color((Fl_Color)2);
+        pretty->value(1);
         pretty->when(FL_WHEN_CHANGED);
         pretty->callback( (Fl_Callback*) butPushPretty, this);
       } // Fl_Light_Button* pretty
