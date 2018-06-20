@@ -10,11 +10,18 @@ GUI::GUI() {
       sources->textfont(13);
       sources->align(Fl_Align(FL_ALIGN_TOP));
     } // Fl_Check_Browser* sources
+    { buffer_hexa = new Fl_Text_Buffer();
+      buffer_hexa->insert(0, "I'm Ugly");
+    } // Fl_Text_Buffer* buffer_hexa
+    { buffer_pretty = new Fl_Text_Buffer();
+      buffer_pretty->insert(0, "I'm Pretty");
+    } // Fl_Text_Buffer* buffer_pretty
     { messages = new Fl_Text_Display(330, 125, 600, 550, "Messages");
       messages->box(FL_DOWN_BOX);
       messages->color(FL_GRAY0);
       messages->textfont(13);
       messages->textcolor(FL_BACKGROUND2_COLOR);
+      messages->buffer(buffer_hexa);
     } // Fl_Text_Display* messages
     { options = new Fl_Pack(330, 15, 600, 80);
       options->type(1);
@@ -29,9 +36,19 @@ GUI::GUI() {
       } // Fl_Light_Button* other
       { pretty = new Fl_Light_Button(840, 35, 80, 40, "Pretty");
         pretty->selection_color((Fl_Color)2);
+        pretty->when(FL_WHEN_CHANGED);
+        pretty->callback( (Fl_Callback*) butPushPretty, this);
       } // Fl_Light_Button* pretty
       options->end();
     } // Fl_Pack* options
     root->end();
   } // Fl_Double_Window* root
+}
+
+void GUI::butPushPretty(Fl_Light_Button* b, GUI * t) {
+    if( b->value() ) {
+        t->messages->buffer(t->buffer_pretty);
+        } else {
+        t->messages->buffer(t->buffer_hexa);
+    }
 }

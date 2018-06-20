@@ -10,11 +10,16 @@
 #include <FL/Fl_Light_Button.H>
 
 class GUI {
+private:
+  static void butPushPretty(Fl_Light_Button*, GUI*);
 public:
   GUI();
+  bool isPretty = false;
   Fl_Double_Window *root;
   Fl_Check_Browser *sources;
   Fl_Text_Display *messages;
+  Fl_Text_Buffer *buffer_hexa;
+  Fl_Text_Buffer *buffer_pretty;
   Fl_Pack *options;
   Fl_Light_Button *notes;
   Fl_Light_Button *cc;

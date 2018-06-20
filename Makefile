@@ -6,11 +6,11 @@ JACK_LDFLAGS = -ljack
 
 APP_NAME = "jackMidiLogger"
 
-main: src/main.cxx
+main: obj/main.o obj/GUI.o
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS)
 
 debug: obj/main.o obj/GUI.o
-	$(CXX) $(CXXFLAGS) -g $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS)
+	$(CXX) $(CXXFLAGS) -g $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME)_debug $(FLTK_LDFLAGS)
 
 obj/main.o: src/main.cxx src/gui/GUI.h
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) -c $< -o $@ $(FLTK_LDFLAGS)
