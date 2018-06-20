@@ -46,9 +46,8 @@ GUI::GUI() {
 }
 
 void GUI::butPushPretty(Fl_Light_Button* b, GUI * t) {
-    if( b->value() ) {
-        t->messages->buffer(t->buffer_pretty);
-        } else {
+    ( b->value() ) ?
+        t->messages->buffer(t->buffer_pretty)
+        :
         t->messages->buffer(t->buffer_hexa);
-    }
 }
