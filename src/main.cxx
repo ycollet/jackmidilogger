@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <queue>
+#include <vector>
 #include "gui/GUI.h"
 #include "audio/audio.hpp"
 
@@ -20,6 +22,7 @@
 // Go !
 int main (int argc, char * argv[]) {
     char name[256];
+    std::queue<std::vector<std::string>> q_midiInputs;
 
 #ifdef DEBUG
     std::snprintf(name, sizeof(name), IAM);
@@ -33,18 +36,15 @@ int main (int argc, char * argv[]) {
         argv++;
     };
 
-    if(auto&& ClientOpt = audio::midi_client::construct(name)) {
-        // Create MIDI client
-        audio::midi_client& client = *ClientOpt;
+    // Create MIDI client
+    audio::midi_client client(name, q_midiInputs);
+    client.activate();
 
-
-        // Create and lauching the GUI main thread
+    if(client.isActivated()) {
+        // Create and lauch the GUI main thread
         GUI * Interface = new GUI();
         Interface->root->show();
         Fl::run();
-
-        client.close();
-
         std::cout << "Bye!" << std::endl;
         return 0;
     } else {
