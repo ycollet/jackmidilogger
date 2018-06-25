@@ -11,6 +11,8 @@ namespace audio {
         public:
             jack_client_t* me;
 
+            ~midi_client();
+
             void close();
 
             static std::experimental::optional<midi_client> construct(char*);
