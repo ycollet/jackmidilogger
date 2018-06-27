@@ -24,6 +24,7 @@ namespace audio {
             std::queue<std::vector<std::string>>& m_q_midiInputs;
             unsigned int m_jack_errors = 0;
             static void cb_registration(jack_port_id_t port, int regis, void *arg);
+            void push_midi_inputs();
     };
 }
 

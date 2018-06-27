@@ -19,6 +19,7 @@ void audio::midi_client::activate() {
         std::cerr << "jack: client not activated" << std::endl;
     }else {
         std::cout << "jack: client activated" << std::endl;
+        this->push_midi_inputs();
     };
 }
 
@@ -44,11 +45,8 @@ bool audio::midi_client::isActivated() {
     return ( this->m_jack_errors > 0 ) ? false : true;
 }
 
-void audio::midi_client::cb_registration(jack_port_id_t port, int regis, void *arg) {
-    (void) port;
-    (void) regis;
-    audio::midi_client * p = (audio::midi_client *) arg;
-    const char ** midi_in_clients = jack_get_ports(p->m_client, NULL, "midi", JackPortIsOutput);
+void audio::midi_client::push_midi_inputs() {
+    const char ** midi_in_clients = jack_get_ports(this->m_client, NULL, "midi", JackPortIsOutput);
     std::vector<std::string> midiInputArray;
 
     // std::cout << std::char_traits<const char*>::length(midi_in_clients) << std::endl;
@@ -58,6 +56,13 @@ void audio::midi_client::cb_registration(jack_port_id_t port, int regis, void *a
 
     jack_free(midi_in_clients);
 
-    p->m_q_midiInputs.push(midiInputArray);
+    this->m_q_midiInputs.push(midiInputArray);
+
+}
+void audio::midi_client::cb_registration(jack_port_id_t port, int regis, void *arg) {
+    (void) port;
+    (void) regis;
+    audio::midi_client * p = (audio::midi_client *) arg;
+    p->push_midi_inputs();
 };
 
