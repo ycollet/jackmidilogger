@@ -51,9 +51,9 @@ void audio::midi_client::cb_registration(jack_port_id_t port, int regis, void *a
     const char ** midi_in_clients = jack_get_ports(p->m_client, NULL, "midi", JackPortIsOutput);
     std::vector<std::string> midiInputArray;
 
-    std::cout << std::char_traits<const char*>::length(midi_in_clients) << std::endl;
+    // std::cout << std::char_traits<const char*>::length(midi_in_clients) << std::endl;
     for(int i=0; midi_in_clients[i]; i++) {
-        midiInputArray.push_back(midi_in_clients[i]);
+        midiInputArray.push_back(std::string(midi_in_clients[i]));
     }
 
     jack_free(midi_in_clients);

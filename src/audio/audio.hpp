@@ -18,12 +18,12 @@ namespace audio {
             void close();
             void setup_callbacks(JackPortRegistrationCallback, void *);
             bool isActivated();
-            static void cb_registration(jack_port_id_t port, int regis, void *arg);
         private:
             jack_client_t* m_client;
             const char* m_name;
             std::queue<std::vector<std::string>>& m_q_midiInputs;
             unsigned int m_jack_errors = 0;
+            static void cb_registration(jack_port_id_t port, int regis, void *arg);
     };
 }
 

@@ -9,7 +9,7 @@ GUI::GUI() {
       sources->labelfont(13);
       sources->textfont(13);
       sources->align(Fl_Align(FL_ALIGN_TOP));
-      sources->add("Test");
+      sources->add("Hi !");
     } // Fl_Check_Browser* sources
     { buffer_hexa = new Fl_Text_Buffer();
       buffer_hexa->insert(0, "I'm Ugly");
