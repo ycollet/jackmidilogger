@@ -21,7 +21,7 @@ private:
 
   std::queue<std::vector<std::string>>& q_portsStates;
 public:
-  GUI(std::queue<std::vector<std::string>>);
+  GUI(std::queue<std::vector<std::string>>&);
   Fl_Double_Window *root;
   // List of possibles MIDI sources
   Fl_Check_Browser *sources;

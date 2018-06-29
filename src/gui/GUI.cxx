@@ -2,7 +2,7 @@
 
 #include "GUI.h"
 
-GUI::GUI(std::queue<std::vector<std::string>> res_q_portStates) : q_portsStates(res_q_portStates) {
+GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates) : q_portsStates(res_q_portStates) {
   { root = new Fl_Double_Window(945, 680, "Jack MIDI Logger");
     root->user_data((void*)(this));
     { sources = new Fl_Check_Browser(15, 125, 300, 550, "Sources");
@@ -68,6 +68,7 @@ void GUI::check_sources(Fl_Widget * b, GUI * t) {
     port_state.push_back(std::to_string(t->sources->checked(index)));
     port_state.push_back(std::to_string(index));
     t->q_portsStates.push(port_state);
+    port_state.clear();
 
     t->messages->changed();
     t->messages->redraw();
