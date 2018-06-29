@@ -64,9 +64,9 @@ void GUI::check_sources(Fl_Widget * b, GUI * t) {
     std::vector<std::string> port_state;
     int index = t->sources->value();
 
-    port_state.push_back(t->sources->text(index));
-    port_state.push_back(std::to_string(t->sources->checked(index)));
     port_state.push_back(std::to_string(index));
+    port_state.push_back(std::to_string(t->sources->checked(index)));
+    port_state.push_back(t->sources->text(index));
     t->q_portsStates.push(port_state);
     port_state.clear();
 
