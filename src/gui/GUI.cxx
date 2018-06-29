@@ -2,7 +2,7 @@
 
 #include "GUI.h"
 
-GUI::GUI() {
+GUI::GUI(std::queue<std::vector<std::string>> res_q_portStates) : q_portsStates(res_q_portStates) {
   { root = new Fl_Double_Window(945, 680, "Jack MIDI Logger");
     root->user_data((void*)(this));
     { sources = new Fl_Check_Browser(15, 125, 300, 550, "Sources");
@@ -10,6 +10,8 @@ GUI::GUI() {
       sources->textfont(13);
       sources->align(Fl_Align(FL_ALIGN_TOP));
       sources->add("Hi !");
+      sources->when(FL_WHEN_CHANGED);
+      sources->callback((Fl_Callback *)check_sources, this);
     } // Fl_Check_Browser* sources
     { buffer_hexa = new Fl_Text_Buffer();
       buffer_hexa->insert(0, "I'm Ugly");
@@ -55,4 +57,18 @@ void GUI::butPushPretty(Fl_Light_Button* b, GUI * t) {
         t->messages->buffer(t->buffer_pretty)
         :
         t->messages->buffer(t->buffer_hexa);
+}
+
+void GUI::check_sources(Fl_Widget * b, GUI * t) {
+    (void) b;
+    std::vector<std::string> port_state;
+    int index = t->sources->value();
+
+    port_state.push_back(t->sources->text(index));
+    port_state.push_back(std::to_string(t->sources->checked(index)));
+    port_state.push_back(std::to_string(index));
+    t->q_portsStates.push(port_state);
+
+    t->messages->changed();
+    t->messages->redraw();
 }

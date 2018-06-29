@@ -48,10 +48,15 @@ bool audio::midi_client::isActivated() {
 void audio::midi_client::push_midi_inputs() {
     const char ** midi_in_clients = jack_get_ports(this->m_client, NULL, "midi", JackPortIsOutput);
     std::vector<std::string> midiInputArray;
+    std::string res;
 
     // std::cout << std::char_traits<const char*>::length(midi_in_clients) << std::endl;
     for(int i=0; midi_in_clients[i]; i++) {
-        midiInputArray.push_back(std::string(midi_in_clients[i]));
+        res.append(std::to_string(i+1));
+        res.append("-");
+        res.append(std::string(midi_in_clients[i]));
+        midiInputArray.push_back(res);
+        res.clear();
     }
 
     jack_free(midi_in_clients);

@@ -45,7 +45,6 @@ void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, GUI* 
             }
             queue.pop();
 
-
             gui->sources->changed();
             gui->sources->redraw();
             Fl::awake();
@@ -58,8 +57,8 @@ void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, GUI* 
 int main (int argc, char * argv[]) {
     char name[256];
     std::queue<std::vector<std::string>> q_midiInputs;
+    std::queue<std::vector<std::string>> q_portsStates;
     bool run_update_inputs = true;
-
 
 #ifdef DEBUG
     std::snprintf(name, sizeof(name), IAM);
@@ -79,7 +78,7 @@ int main (int argc, char * argv[]) {
 
     if(client.isActivated()) {
         // Create and lauch the GUI main thread
-        GUI * Interface = new GUI();
+        GUI * Interface = new GUI(q_portsStates);
         Interface->root->show();
 
         std::thread thread_update_inputs(update_inputs,std::ref(run_update_inputs), std::ref(q_midiInputs),Interface);

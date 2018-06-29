@@ -8,14 +8,20 @@
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Pack.H>
 #include <FL/Fl_Light_Button.H>
+#include <queue>
+#include <vector>
+#include <string>
 
 class GUI {
 private:
   // Callback function dedicated to the Pretty Button
   // Change the Text Buffer of Messages to Pretty or Hexa
   static void butPushPretty(Fl_Light_Button*, GUI*);
+  static void check_sources(Fl_Widget*, GUI*);
+
+  std::queue<std::vector<std::string>>& q_portsStates;
 public:
-  GUI();
+  GUI(std::queue<std::vector<std::string>>);
   Fl_Double_Window *root;
   // List of possibles MIDI sources
   Fl_Check_Browser *sources;
