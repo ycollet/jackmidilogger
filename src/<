@@ -1,16 +1,9 @@
 #include "audio.hpp"
 
 audio::midi_client::~midi_client() {
-    int unregister = 0;
     for( jack_port_t* p: this->m_ports ) {
-        unregister += jack_port_unregister(this->m_client, p);
+        jack_port_unregister(this->m_client, p);
     }
-    if(unregister) {
-        std::cerr << "jack: ports not unregistered" << std::endl;
-    } else {
-        std::cout << "jack: ports unregistered" << std::endl;
-    }
-
     if( jack_deactivate(this->m_client) ) {;
         std::cerr << "jack: client not deactivated" << std::endl;
     }else {
@@ -63,8 +56,8 @@ void audio::midi_client::init_midi_inputs() {
     if(midi_in_clients) {
         std::cout << "jack: init registration" << std::endl;
         for(int i=0; midi_in_clients[i]; i++) {
-            res.push_back("1");
             res.push_back(std::string(midi_in_clients[i]));
+            res.push_back("1");
             this->m_q_midiInputs.push(res);
             res.clear();
         }
@@ -78,7 +71,12 @@ void audio::midi_client::cb_registration(jack_port_id_t port, int regis, void *a
     audio::midi_client * p = (audio::midi_client *) arg;
     jack_port_t * reg_port = jack_port_by_id(p->m_client, port);
     std::vector<std::string> res;
-    if( !jack_port_is_mine(p->m_client, reg_port) && jack_port_flags(reg_port) == 2 && !std::strcmp(jack_port_type(reg_port), "8 bit raw midi")) {
+    std::cout << regis << std::endl;
+    std::cout << jack_port_type(reg_port) << std::endl;
+    std::cout << jack_port_flags(reg_port) << std::endl;
+    std::cout << jack_port_name(reg_port) << std::endl;
+    std::cout << JackPortIsInput << std::endl;
+    if( !jack_port_is_mine(p->m_client, reg_port) && jack_port_flags(reg_port) == 22 ) {
         res.push_back(std::to_string(regis));
         res.push_back(std::string(jack_port_name(reg_port)));
         p->m_q_midiInputs.push(res);

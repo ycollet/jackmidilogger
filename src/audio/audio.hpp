@@ -4,6 +4,8 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
+#include <cstring>
 #include <jack/jack.h>
 #include <jack/midiport.h>
 #include <experimental/optional>
@@ -15,17 +17,17 @@ namespace audio {
             ~midi_client();
 
             void activate();
-            void close();
             void setup_callbacks(JackPortRegistrationCallback, void *);
             bool isActivated();
+            void check_port(std::vector<std::string>&);
         private:
             jack_client_t* m_client;
             const char* m_name;
             std::queue<std::vector<std::string>>& m_q_midiInputs;
             unsigned int m_jack_errors = 0;
             static void cb_registration(jack_port_id_t port, int regis, void *arg);
-            void push_midi_inputs();
-            void check_port(std::vector<std::string>);
+            void init_midi_inputs();
+            std::vector<jack_port_t *> m_ports;
     };
 }
 

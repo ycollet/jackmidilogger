@@ -9,7 +9,6 @@ GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates) : q_portsStates
       sources->labelfont(13);
       sources->textfont(13);
       sources->align(Fl_Align(FL_ALIGN_TOP));
-      sources->add("Hi !");
       sources->when(FL_WHEN_CHANGED);
       sources->callback((Fl_Callback *)check_sources, this);
     } // Fl_Check_Browser* sources
@@ -68,8 +67,5 @@ void GUI::check_sources(Fl_Widget * b, GUI * t) {
     port_state.push_back(std::to_string(t->sources->checked(index)));
     port_state.push_back(t->sources->text(index));
     t->q_portsStates.push(port_state);
-    port_state.clear();
-
-    t->messages->changed();
-    t->messages->redraw();
 }
+

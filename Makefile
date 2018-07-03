@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -Werror
+CXXFLAGS = -Wall -Wextra -Werror -O2
 FLTK_CXXFLAGS = `fltk-config --cflags`
 FLTK_LDFLAGS = `fltk-config --ldflags`
 JACK_LDFLAGS = -ljack

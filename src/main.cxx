@@ -22,43 +22,83 @@
 #define IAM "Jack Midi Logger"
 
 // Threads
-void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, GUI* gui) {
-    while( run ) {
+void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, std::queue<std::vector<std::string>>& queue_port_removed, GUI* gui) {
+    (void) queue_port_removed;
+    do {
+        bool isListed = false;
         if( !queue.empty() ) {
+                Fl::lock();
+                // Cycle through items in Check Browser
+                int imax = gui->sources->nitems();
+                for(int i=1; i <= imax; i++) {
+                    if( std::string(gui->sources->text(i)) == queue.front()[1] ) {
+                        if( queue.front()[0] == "0" ) {
+                            std::cout << "Removed " << gui->sources->text(i) << std::endl;
 
-            Fl::lock();
+                            if( gui->sources->checked(i) == 1 ) {
+                                dprint("gui: checked when removed");
+                                std::vector<std::string> deleted;
+                                deleted.push_back(std::to_string(i));
+                                deleted.push_back(std::to_string(0));
+                                deleted.push_back(gui->sources->text(i));
+                                queue_port_removed.push(deleted);
+                            }
 
-            for(int i= 1; i <= gui->sources->nitems(); i++) {
-                std::vector<std::string>::iterator isListed = std::find(queue.front().begin(),
-                        queue.front().end(), std::string(gui->sources->text(i)) );
-                if( isListed != queue.front().end() ) {
-                    queue.front().erase(isListed);
-                } else {
-                    gui->sources->remove(i);
+                            gui->sources->remove(i);
+                        } else if (gui->sources->checked(i) == 1 ) {
+                                dprint("gui: checked when reconnect");
+                                std::vector<std::string> reconnected;
+                                reconnected.push_back(std::to_string(i));
+                                reconnected.push_back(std::to_string(1));
+                                reconnected.push_back(gui->sources->text(i));
+                                queue_port_removed.push(reconnected);
+                        }
+                        isListed = true;
+                        break;
+                    }
                 }
+                gui->sources->redraw();
+                Fl::unlock();
+
+            if( !isListed ) {
+                Fl::lock();
+                std::cout << "Found " << queue.front()[1] << std::endl;
+                gui->sources->add(queue.front()[1].c_str());
+                gui->sources->redraw();
+                Fl::unlock();
             }
 
-            if( !queue.front().empty() ) {
-                for(const std::string& label: queue.front()) {
-                    gui->sources->add(label.c_str());
-                }
-            }
-            queue.pop();
-
-            gui->sources->changed();
-            gui->sources->redraw();
             Fl::awake();
-            Fl::unlock();
+            queue.pop();
+        }
+    } while(run);
+}
+
+void update_ports(bool& run, std::queue<std::vector<std::string>>& queue, audio::midi_client& client) {
+    while(run) {
+        while(!queue.empty()) {
+            client.check_port(queue.front());
+            queue.pop();
         }
     }
 }
 
+bool run_update_inputs = true;
+std::thread thread_update_inputs;
+static void cb_main_window( Fl_Widget * w, void * ) {
+    run_update_inputs = false;
+    thread_update_inputs.join();
+    dprint("main: thread input out");
+    w->hide();
+}
 // Go !
+
+
 int main (int argc, char * argv[]) {
     char name[256];
     std::queue<std::vector<std::string>> q_midiInputs;
     std::queue<std::vector<std::string>> q_portsStates;
-    bool run_update_inputs = true;
+    bool run_update_ports= true;
 
 #ifdef DEBUG
     std::snprintf(name, sizeof(name), IAM);
@@ -79,16 +119,20 @@ int main (int argc, char * argv[]) {
     if(client.isActivated()) {
         // Create and lauch the GUI main thread
         GUI * Interface = new GUI(q_portsStates);
+
+        thread_update_inputs = std::thread(update_inputs,std::ref(run_update_inputs), std::ref(q_midiInputs), std::ref(q_portsStates), Interface);
+        std::thread thread_update_ports(update_ports,std::ref(run_update_ports), std::ref(q_portsStates),std::ref(client));
+
+        Interface->root->callback(cb_main_window);
         Interface->root->show();
-
-        std::thread thread_update_inputs(update_inputs,std::ref(run_update_inputs), std::ref(q_midiInputs),Interface);
-
         Fl::lock();
         Fl::run();
-        run_update_inputs = false;
-        thread_update_inputs.join();
+        dprint("main: gui ending");
 
-        std::cout << "Bye!" << std::endl;
+        run_update_ports= false;
+        thread_update_ports.join();
+        dprint("main: thread ports out");
+
         return 0;
     } else {
         dprint("MIDI Client creation failed");
