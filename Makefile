@@ -2,6 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -O2
 FLTK_CXXFLAGS = `fltk-config --cflags`
 FLTK_LDFLAGS = `fltk-config --ldflags`
+JACK_CXXFLAGS = -Wno-deprecated-declarations
 JACK_LDFLAGS = -ljack
 
 APP_NAME = jackMidiLogger
@@ -23,4 +24,4 @@ obj/GUI.o: src/gui/GUI.cxx src/gui/GUI.h
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) -c $< -o $@ $(FLTK_LDFLAGS)
 
 obj/audio.o: src/audio/audio.cpp src/audio/audio.hpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(JACK_LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(JACK_CXXFLAGS) -c $< -o $@ $(JACK_LDFLAGS)
