@@ -37,7 +37,7 @@ GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates, char* name) : q
         cc->selection_color((Fl_Color)2);
         cc->value(1);
       } // Fl_Light_Button* cc
-      { aftertouch = new Fl_Light_Button(750, 35, 80, 40, "PAfter");
+      { aftertouch = new Fl_Light_Button(750, 35, 80, 40, "AfterTch");
         aftertouch->selection_color((Fl_Color) 2);
       }
       { sysex = new Fl_Light_Button(840, 35, 80, 40, "SysEx");

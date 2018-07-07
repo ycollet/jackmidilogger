@@ -7,11 +7,14 @@ FLTK_LDFLAGS = `fltk-config --ldflags`
 JACK_CXXFLAGS = -Wno-deprecated-declarations
 JACK_LDFLAGS = -ljack
 
-APP_NAME = jackMidiLogger
+APP_NAME = jackmidilogger
 
 debug: CXXFLAGS += -DDEBUG -g
 debug: APP_NAME = debug
 debug: main
+
+install: bin/$(APP_NAME)
+	cp -v $^ /usr/local/bin/
 
 main: src/main.cxx obj/GUI.o obj/audio.o
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS) $(JACK_LDFLAGS)
