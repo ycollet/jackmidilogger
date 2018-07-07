@@ -8,13 +8,20 @@ JACK_CXXFLAGS = -Wno-deprecated-declarations
 JACK_LDFLAGS = -ljack
 
 APP_NAME = jackmidilogger
+DESKTOP_FILE = jackmidilogger.desktop
+PREFIX = /usr/local
 
 debug: CXXFLAGS += -DDEBUG -g
 debug: APP_NAME = debug
 debug: main
 
 install: bin/$(APP_NAME)
-	cp -v $^ /usr/local/bin/
+	cp -v $^ $(PREFIX)/bin/
+	cp -v $(DESKTOP_FILE) $(PREFIX)/share/applications/
+
+uninstall:
+	rm -v $(PREFIX)/bin/$(APP_NAME)
+	rm -v $(PREFIX)/applications/$(DESKTOP_FILE)
 
 main: src/main.cxx obj/GUI.o obj/audio.o
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS) $(JACK_LDFLAGS)

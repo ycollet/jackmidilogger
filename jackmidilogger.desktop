@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Jack MIDI Logger
+Comment=Jack MIDI logger
+Exec=jackmidilogger
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Categories=Application;AudioVideo;Audio;Multimedia;
