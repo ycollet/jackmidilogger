@@ -2,12 +2,20 @@
 
 std::string audio::midi_notes::getNoteName(int noteNumber) {
     if( noteNumber > 127 || noteNumber < 0 ) {
-        return std::string("");
+        return std::string("Undefined");
     } else {
         std::string res;
         res += m_noteNames[noteNumber%12];
         res += std::to_string(std::div(noteNumber, 12).quot - 1);
         return res;
+    }
+}
+
+std::string audio::midi_control_change::getControlByNumber(int ccNumber) {
+    if( ccNumber > 127 || ccNumber < 0 ) {
+        return std::string("Undefined");
+    } else {
+        return this->m_controlChange[ccNumber];
     }
 }
 

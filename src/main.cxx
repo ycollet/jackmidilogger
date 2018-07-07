@@ -77,7 +77,7 @@ void update_ports(bool& run, std::queue<std::vector<std::string>>& queue, audio:
     }
 }
 
-std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_notes& midiNotes) {
+std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_notes& midiNotes, audio::midi_control_change& midiCC) {
     std::stringstream res;
     switch(type) {
         case 0x80:
@@ -89,6 +89,10 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             res << " on, with a velocity of ";
             res << (int) message[2];
             break;
+        case 0xb0:
+            res << "Control " << midiCC.getControlByNumber((int) message[1]);
+            res << " , value of ";
+            res << (int) message[2];
         default:
             res << "No prettyfying for this one.";
             break;
@@ -99,6 +103,7 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
 void update_display(bool& run, std::queue<std::vector<unsigned char>>& queue, GUI * gui) {
     (void) gui;
     audio::midi_notes midiNotes;
+    audio::midi_control_change midiCC;
     while(run) {
         while(!queue.empty()) {
             int type = (int) queue.front()[2] & 0xf0;
@@ -121,7 +126,7 @@ void update_display(bool& run, std::queue<std::vector<unsigned char>>& queue, GU
                     hexa << std::showbase << std::hex << (int) *byte;
                     hexa << " ";
                 }
-                pretty << prettyfy(type, message, midiNotes) << "\n";
+                pretty << prettyfy(type, message, midiNotes, midiCC) << "\n";
                 hexa << "\n";
                 Fl::lock();
                 gui->buffer_pretty->insert(0, pretty.str().c_str());
