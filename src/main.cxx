@@ -94,6 +94,43 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             res << " , value of ";
             res << (int) message[2];
             break;
+        case 0xf0:
+            res << "SysEx message :\n\t";
+            for(std::vector<unsigned char>::iterator byte=message.begin(); byte!=message.end(); byte++) {
+                res << std::showbase << std::hex << (int) *byte;
+                res <<" ";
+            }
+            break;
+        case 0xf1:
+            res << "MIDI Time Code Qtr. Frame - ";
+            res << (int) message[1] << " " << (int) message[2];
+            break;
+        case 0xf2:
+            res << "Song Position Pointer - LSB: ";
+            res << (int) message[1] << " MSB: " << (int) message[2];
+            break;
+        case 0xf3:
+            res << "Song Selection, number: ";
+            res << (int) message[1];
+            break;
+        case 0xf6:
+            res << "Tune Request";
+            break;
+        case 0xfa:
+            res << "Start";
+            break;
+        case 0xfb:
+            res << "Continue";
+            break;
+        case 0xfc:
+            res << "Stop";
+            break;
+        case 0xfe:
+            res << "Active Sensing";
+            break;
+        case 0xff:
+            res << "System Reset";
+            break;
         default:
             res << "No prettyfying for this one.";
             break;
@@ -107,10 +144,13 @@ void update_display(bool& run, std::queue<std::vector<unsigned char>>& queue, GU
     audio::midi_control_change midiCC;
     while(run) {
         while(!queue.empty()) {
-            int type = (int) queue.front()[2] & 0xf0;
+            int type = ((int) queue.front()[2] > 0xf0) ? (int) queue.front()[2] : (int) queue.front()[2] & 0xf0;
             if( ((type == 0x80 || type == 0x90) && gui->notes->value()) ||
                     (type == 0xb0 && gui->cc->value()) ||
-                    ( (type > 0xbf || type == 0xa0) && gui->other->value()) ) {
+                    ((type == 0xf0 || type == 0xf7) && gui->sysex->value()) ||
+                    ( (type > 0xf0 && type != 0xf7) && gui->song->value()) ||
+                    ((type == 0xa0 || type == 0xd0) && gui->aftertouch->value()) ||
+                    ((type == 0xc0 || type == 0xe0 ) && gui->other->value()) ) {
 
                 std::stringstream pretty;
                 std::stringstream hexa;
