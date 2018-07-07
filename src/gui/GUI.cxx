@@ -35,12 +35,20 @@ GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates) : q_portsStates
       } // Fl_Light_Button* notes
       { cc = new Fl_Light_Button(660, 35, 80, 40, "CC");
         cc->selection_color((Fl_Color)2);
+        cc->value(1);
       } // Fl_Light_Button* cc
-      { other = new Fl_Light_Button(750, 35, 80, 40, "Other");
+      { sysex = new Fl_Light_Button(750, 35, 80, 40, "SysEx");
+        sysex->selection_color((Fl_Color) 2);
+        sysex->value(1);
+      }
+      { transport = new Fl_Light_Button(840, 35, 80, 40, "Song");
+        transport->selection_color((Fl_Color) 2);
+      }
+      { other = new Fl_Light_Button(930, 35, 80, 40, "Other");
         other->selection_color((Fl_Color)2);
       } // Fl_Light_Button* other
-      { pretty = new Fl_Light_Button(840, 35, 80, 40, "Pretty");
-        pretty->selection_color((Fl_Color)2);
+      { pretty = new Fl_Light_Button(1020, 35, 80, 40, "Pretty");
+        pretty->selection_color((Fl_Color)1);
         pretty->value(1);
         pretty->when(FL_WHEN_CHANGED);
         pretty->callback( (Fl_Callback*) butPushPretty, this);

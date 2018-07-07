@@ -93,6 +93,7 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             res << "Control " << midiCC.getControlByNumber((int) message[1]);
             res << " , value of ";
             res << (int) message[2];
+            break;
         default:
             res << "No prettyfying for this one.";
             break;

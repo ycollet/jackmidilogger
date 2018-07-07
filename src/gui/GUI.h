@@ -37,6 +37,10 @@ public:
   Fl_Light_Button *cc;
   // Switch display of MIDI Messages On / Off
   Fl_Light_Button *other;
+  // Switch display of MIDI Transport
+  Fl_Light_Button *transport;
+  // Switch display of MIDI SysEx
+  Fl_Light_Button *sysex;
   // Pretty or Not ?
   Fl_Light_Button *pretty;
 };
