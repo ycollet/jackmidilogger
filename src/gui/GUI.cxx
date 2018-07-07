@@ -2,8 +2,8 @@
 
 #include "GUI.h"
 
-GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates) : q_portsStates(res_q_portStates) {
-  { root = new Fl_Double_Window(945, 680, "Jack MIDI Logger");
+GUI::GUI(std::queue<std::vector<std::string>>& res_q_portStates, char* name) : q_portsStates(res_q_portStates) {
+  { root = new Fl_Double_Window(945, 680, name);
     root->user_data((void*)(this));
     { sources = new Fl_Check_Browser(15, 125, 300, 550, "Sources");
       sources->labelfont(13);

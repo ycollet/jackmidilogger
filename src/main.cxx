@@ -7,7 +7,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-#include <iomanip>
+#include <sstream>
 #include <algorithm>
 #include "gui/GUI.h"
 #include "audio/audio.hpp"
@@ -17,11 +17,12 @@
 
 #ifdef DEBUG
 #define dprint(x) std::cout << x << std::endl
+#define IAM "Jack Midi Logger - DEBUG"
 #else
 #define dprint(x)
+#define IAM "Jack Midi Logger"
 #endif
 
-#define IAM "Jack Midi Logger"
 
 // Threads
 void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, std::queue<std::vector<std::string>>& queue_port_removed, GUI* gui) {
@@ -79,6 +80,7 @@ void update_ports(bool& run, std::queue<std::vector<std::string>>& queue, audio:
 
 std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_notes& midiNotes, audio::midi_control_change& midiCC) {
     std::stringstream res;
+    int fourteen = 0;
     switch(type) {
         case 0x80:
             res << "Note " << midiNotes.getNoteName((int) message[1]);
@@ -90,12 +92,13 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             res << (int) message[2];
             break;
         case 0xb0:
+            res << "(" << (int) message[1] << ") ";
             res << "Control " << midiCC.getControlByNumber((int) message[1]);
             res << " , value of ";
             res << (int) message[2];
             break;
         case 0xf0:
-            res << "SysEx message :\n\t";
+            res << "SysEx message :\n    ";
             for(std::vector<unsigned char>::iterator byte=message.begin(); byte!=message.end(); byte++) {
                 res << std::showbase << std::hex << (int) *byte;
                 res <<" ";
@@ -106,8 +109,10 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             res << (int) message[1] << " " << (int) message[2];
             break;
         case 0xf2:
+            fourteen = ((int) message[2] << 7) + (int) message[1];
             res << "Song Position Pointer - LSB: ";
             res << (int) message[1] << " MSB: " << (int) message[2];
+            res << " - " << fourteen;
             break;
         case 0xf3:
             res << "Song Selection, number: ";
@@ -130,6 +135,25 @@ std::string prettyfy (int type, std::vector<unsigned char> message, audio::midi_
             break;
         case 0xff:
             res << "System Reset";
+            break;
+        case 0xa0:
+            res << "Polyphonic Aftertouch, ";
+            res << "Note " << midiNotes.getNoteName((int) message[1]);
+            res << " , pressure ";
+            res << (int) message[2];
+            break;
+        case 0xd0:
+            res << "Channel Pressure, ";
+            res << (int) message[1];
+            break;
+        case 0xc0:
+            res << "Program Change, number";
+            res << (int) message[1];
+            break;
+        case 0xe0:
+            fourteen = ((int) message[2] << 7) + (int) message[1];
+            res << "Pitch Bend, ";
+            res << fourteen;
             break;
         default:
             res << "No prettyfying for this one.";
@@ -159,9 +183,8 @@ void update_display(bool& run, std::queue<std::vector<unsigned char>>& queue, GU
                 std::vector<unsigned char>::const_iterator message_last = queue.front().end();
                 std::vector<unsigned char> message(message_first, message_last);
 
-                pretty << "From " << (int) queue.front()[0];
-                pretty << " channel " << std::oct << ((queue.front()[2] & 0x0f) + 1);
-                pretty << "\n\t";
+                pretty << "Input " << (int) queue.front()[0];
+                pretty << "\n    ";
                 hexa << "[" << (int) queue.front()[0] << "]\t";
                 for(std::vector<unsigned char>::iterator byte=message.begin(); byte!=message.end(); byte++) {
                     hexa << std::showbase << std::hex << (int) *byte;
@@ -197,13 +220,13 @@ static void cb_main_window( Fl_Widget * w, void * ) {
 // Go !
 int main (int argc, char * argv[]) {
     char name[256];
+    std::snprintf(name, sizeof(name), IAM);
     std::queue<std::vector<std::string>> q_midiInputs;
     std::queue<std::vector<std::string>> q_portsStates;
     std::queue<std::vector<unsigned char>> q_midiMessages;
     bool run_update_ports= true;
 
 #ifdef DEBUG
-    std::snprintf(name, sizeof(name), IAM);
     std::cout << name << " _ " << getpid() << std::endl;
 #endif
 
@@ -220,7 +243,7 @@ int main (int argc, char * argv[]) {
 
     if(client.isActivated()) {
         // Create and lauch the GUI main thread
-        GUI * Interface = new GUI(q_portsStates);
+        GUI * Interface = new GUI(q_portsStates, name);
 
         thread_update_inputs = std::thread(update_inputs,std::ref(run_update_inputs), std::ref(q_midiInputs), std::ref(q_portsStates), Interface);
         thread_update_display = std::thread(update_display,std::ref(run_update_display), std::ref(q_midiMessages), Interface);
@@ -230,15 +253,15 @@ int main (int argc, char * argv[]) {
         Interface->root->show();
         Fl::lock();
         Fl::run();
-        dprint("main: gui ending");
+        std::cout << "main: gui ending" << std::endl;
 
         run_update_ports= false;
         thread_update_ports.join();
-        dprint("main: thread ports out");
+        std::cout << "main: thread ports out" << std::endl;
 
         return 0;
     } else {
-        dprint("MIDI Client creation failed");
+        std::cerr << "MIDI Client creation failed" << std::endl;
         return 1;
     };
 }
