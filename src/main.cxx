@@ -53,7 +53,7 @@ void update_inputs(bool& run, std::queue<std::vector<std::string>>& queue, std::
                 gui->sources->redraw();
                 Fl::unlock();
 
-            if( !isListed ) {
+            if( !isListed  && queue.front()[0] == "1") {
                 Fl::lock();
                 std::cout << "Found " << queue.front()[1] << std::endl;
                 gui->sources->add(queue.front()[1].c_str());

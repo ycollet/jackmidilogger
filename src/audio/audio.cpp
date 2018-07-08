@@ -150,8 +150,8 @@ void audio::midi_client::check_port(std::vector<std::string>& ports) {
                 exists = true;
                 if( (ports[1] == "1") ) {
                     jack_port_disconnect(this->m_client, *p);
-                    jack_port_set_name(*p, name.c_str());
-                    jack_port_set_alias(*p, ports[0].c_str());
+                    //jack_port_set_name(*p, name.c_str());
+                    //jack_port_set_alias(*p, ports[0].c_str());
                     jack_connect(this->m_client, ports[2].c_str(), jack_port_name(*p));
                     std::cout << "jack: reconnect " << ports[2] << " to " << compare << std::endl;
                 // if deactivation asked, disconnect and unregister and erase
