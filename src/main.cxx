@@ -184,7 +184,7 @@ void update_display(bool& run, std::queue<std::vector<unsigned char>>& queue, GU
                 std::vector<unsigned char> message(message_first, message_last);
 
                 pretty << "Input " << (int) queue.front()[0];
-                pretty << ", channel " << (int) (queue.front()[2] & 0x0f);
+                pretty << ", channel " << (int) (queue.front()[2] & 0x0f) + 1;
                 pretty << "\n    ";
                 hexa << "[" << (int) queue.front()[0] << "]\t";
                 for(std::vector<unsigned char>::iterator byte=message.begin(); byte!=message.end(); byte++) {
