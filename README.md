@@ -22,7 +22,7 @@ and reconnect if the input ports is coming up again. It keeps the display always
 * Comment
 * Clock ticks are not displayed, should they ?
 * Display manufacturer when SysEx received
-* Take a look at what can be translated with MPE or MIDI-CLI
+* Take a look at what can be translated with MPE or MIDI CI
 
 ## Prerequisites
 ```
