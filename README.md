@@ -4,10 +4,10 @@ A JACK MIDI event reader, in C++ using Fltk for the GUI.
 The message types can be filtered. You also get two modes of visualisation.
 
 The Pretty one, where the messages are translated as much as possible to human language and musical notation:
-![Screenshot](https://github.com/ArnaudE/jackmidilogger/raw/master/doc/sc_pretty.png)
+![Screenshot](https://git.losmouchos.com/Arnaud/jackmidilogger/raw/master/doc/sc_pretty.png)
 
 A Raw one, pure hexa porn:
-![Screenshot](https://github.com/ArnaudE/jackmidilogger/raw/master/doc/sc_raw.png)
+![Screenshot](https://git.losmouchos.com/Arnaud/jackmidilogger/raw/master/doc/sc_raw.png)
 
 ## Before you clone
 
