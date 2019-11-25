@@ -6,6 +6,7 @@ FLTK_CXXFLAGS = `fltk-config --cflags`
 FLTK_LDFLAGS = `fltk-config --ldflags`
 JACK_CXXFLAGS = -Wno-deprecated-declarations
 JACK_LDFLAGS = -ljack
+LDFLAGS = -lpthread
 
 APP_NAME = jackmidilogger
 DESKTOP_FILE = jackmidilogger.desktop
@@ -24,10 +25,13 @@ uninstall:
 	rm -v $(PREFIX)/applications/$(DESKTOP_FILE)
 
 main: src/main.cxx obj/GUI.o obj/audio.o
-	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS) $(JACK_LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) $^ -o bin/$(APP_NAME) $(FLTK_LDFLAGS) $(JACK_LDFLAGS) $(LDFLAGS)
 
 obj/GUI.o: src/gui/GUI.cxx src/gui/GUI.h
 	$(CXX) $(CXXFLAGS) $(FLTK_CXXFLAGS) -c $< -o $@ $(FLTK_LDFLAGS)
 
 obj/audio.o: src/audio/audio.cpp src/audio/audio.hpp
 	$(CXX) $(CXXFLAGS) $(JACK_CXXFLAGS) -c $< -o $@ $(JACK_LDFLAGS)
+
+clean:
+	rm obj/*.o
